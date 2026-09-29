@@ -28,7 +28,9 @@ where this file lies so we can find the odel filw
 BASE_DIR = os.path.dirname(__file__)
 MODEL_PATH = os.path.join(BASE_DIR, "Artifacts", "simple_gcn_cora.onnx")
 DATA_DIR = os.path.join(BASE_DIR, "data", "Planetoid")
+CORA_NPZ = os.path.join(BASE_DIR, "data", "cora_data.npz")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+
 
 
 # load the trained model - create a lifetime model - model runns until its closed manually
@@ -200,32 +202,31 @@ def predict_custom_graph(request: GraphPredictRequest):
 # predict real cora nodes
 @app.post("/predict/cora_node")
 def predict_real_cora_nodes(request: CoraNodeRequest):
-    # we r importing the dataset cora load when we call this funtion / route so load balancing should be ,aintained
+    if os.path.exists(CORA_NPZ):
+        cora_data = np.load(CORA_NPZ)
+        node_features = cora_data["x"]
+        edge_index = cora_data["edge_index"]
+    else:
+        try:
+            from torch_geometric.datasets import Planetoid
+            cora_dataset = Planetoid(root=DATA_DIR, name="Cora")[0]
+            node_features = cora_dataset.x.numpy()
+            edge_index = cora_dataset.edge_index.numpy()
+        except Exception:
+            raise HTTPException(500, "Failed to load Cora dataset")
 
-    from torch_geometric.datasets import Planetoid
-
-    try:
-        cora_dataset = Planetoid(root=DATA_DIR, name="Cora")[0]  # to get data
-
-    except Exception as error:
-        raise HTTPException(500, f"failed to load cora dataset ")
-
-    # here highest limit for no of node is 2708 so more than that we just throwerror
-    # check out laiers
-
-    largest_valid_index = cora_dataset.num_nodes - 1
+    largest_valid_index = node_features.shape[0] - 1
     invalid_index = [
         i for i in request.node_indices if i < 0 or i > largest_valid_index
     ]
 
     if invalid_index:
         raise HTTPException(
-            400, f"node index out of bound ( must be 0 to {largest_valid_index})"
+            400, f"node index out of bound (must be 0 to {largest_valid_index})"
         )
 
-    return run_model(
-        cora_dataset.x.numpy(), cora_dataset.edge_index.numpy(), request.node_indices
-    )
+    return run_model(node_features, edge_index, request.node_indices)
+
 
 
 if os.path.isdir(STATIC_DIR):
