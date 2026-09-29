@@ -1,660 +1,559 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>GCN Cora | Graph Neural Network</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
-
+    <title>GCN Cora | Graph Intelligence Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
 
 <div class="app">
 
-
-<!-- ================= SIDEBAR ================= -->
-<aside class="sidebar">
-
-    <div class="brand">
-        <div class="brand-icon">G</div>
-
-        <div>
-            <h2>GCN Cora</h2>
-            <span>Graph Intelligence</span>
-        </div>
-    </div>
-
-    <nav class="navigation">
-
-        <button class="nav-item active" data-section="dashboard">
-            <span>⌂</span>
-            Dashboard
-        </button>
-
-        <button class="nav-item" data-section="cora">
-            <span>◉</span>
-            Cora Prediction
-        </button>
-
-        <button class="nav-item" data-section="custom">
-            <span>⬡</span>
-            Custom Graph
-        </button>
-
-        <button class="nav-item" data-section="model">
-            <span>⚙</span>
-            Model Details
-        </button>
-
-    </nav>
-
-    <div class="sidebar-bottom">
-
-        <div class="api-status">
-            <span class="status-dot" id="sidebarStatus"></span>
-
-            <div>
-                <strong id="sidebarStatusText">Checking API</strong>
-                <small>FastAPI Backend</small>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+        
+        <div class="brand">
+            <div class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h2>GCN Cora</h2>
+                <span>Graph Intelligence v1.0</span>
             </div>
         </div>
 
-        <div class="sidebar-footer">
-            Simple GCN • Cora Dataset
-        </div>
+        <nav class="navigation">
+            <button class="nav-item active" data-section="dashboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </button>
 
-    </div>
+            <button class="nav-item" data-section="cora">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Cora Prediction</span>
+            </button>
 
-</aside>
+            <button class="nav-item" data-section="custom">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <span>Custom Graph</span>
+            </button>
 
+            <button class="nav-item" data-section="model">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Model Details</span>
+            </button>
+        </nav>
 
-<!-- ================= MAIN ================= -->
-<main class="main">
-
-    <!-- TOPBAR -->
-    <header class="topbar">
-
-        <div>
-            <div class="breadcrumb">
-                ML Platform / <span id="breadcrumbCurrent">Dashboard</span>
+        <div class="sidebar-bottom">
+            <div class="api-status">
+                <div class="status-pulse-wrapper">
+                    <span class="status-dot" id="sidebarStatus"></span>
+                    <span class="status-ring"></span>
+                </div>
+                <div class="status-info">
+                    <strong id="sidebarStatusText">Checking API...</strong>
+                    <small>FastAPI ONNX Runtime</small>
+                </div>
             </div>
 
-            <h1 id="pageTitle">Graph Neural Network Dashboard</h1>
+            <div class="sidebar-footer">
+                Planetoid Cora • 1,433 Features
+            </div>
         </div>
 
-        <div class="topbar-right">
+    </aside>
 
-            <div class="backend-status">
-                <span class="status-dot" id="topStatus"></span>
-                <span id="topStatusText">Checking</span>
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="breadcrumb">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    <span>ML Platform</span>
+                    <span class="sep">/</span>
+                    <span id="breadcrumbCurrent" class="current-crumb">Dashboard</span>
+                </div>
+                <h1 id="pageTitle">Graph Neural Network Dashboard</h1>
             </div>
 
-            <div class="model-pill">
-                <span>●</span>
-                Simple GCN
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <!-- ================================================= -->
-    <!-- DASHBOARD -->
-    <!-- ================================================= -->
-
-    <section class="page-section active" id="dashboard">
-
-        <div class="hero">
-
-            <div class="hero-content">
-
-                <div class="eyebrow">
-                    GRAPH NEURAL NETWORK
+            <div class="topbar-right">
+                <div class="backend-status">
+                    <span class="status-dot" id="topStatus"></span>
+                    <span id="topStatusText">Checking</span>
                 </div>
 
-                <h2>
-                    Citation Network
-                    <span>Classification</span>
-                </h2>
-
-                <p>
-                    Analyze research papers as graph nodes and classify
-                    them into one of seven academic research topics using
-                    a trained Graph Convolutional Network.
-                </p>
-
-                <div class="hero-actions">
-
-                    <button class="primary-btn" onclick="showSection('cora')">
-                        Predict Cora Node
-                        <span>→</span>
-                    </button>
-
-                    <button class="secondary-btn" onclick="showSection('model')">
-                        View Model
-                    </button>
-
+                <div class="model-pill">
+                    <span class="pill-dot"></span>
+                    Simple GCN (ONNX)
                 </div>
-
             </div>
+        </header>
 
-            <div class="hero-visual">
+        <!-- ================================================= -->
+        <!-- DASHBOARD -->
+        <!-- ================================================= -->
+        <section class="page-section active" id="dashboard">
 
-                <div class="network">
-
-                    <div class="node node-1">N</div>
-                    <div class="node node-2">N</div>
-                    <div class="node node-3">N</div>
-                    <div class="node node-4 active-node">GCN</div>
-                    <div class="node node-5">N</div>
-                    <div class="node node-6">N</div>
-                    <div class="node node-7">N</div>
-
-                    <div class="edge edge-1"></div>
-                    <div class="edge edge-2"></div>
-                    <div class="edge edge-3"></div>
-                    <div class="edge edge-4"></div>
-                    <div class="edge edge-5"></div>
-                    <div class="edge edge-6"></div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- STAT CARDS -->
-
-        <div class="stats-grid">
-
-            <div class="stat-card">
-
-                <div class="stat-icon purple">N</div>
-
-                <div>
-                    <span>Graph Nodes</span>
-                    <strong>2,708</strong>
-                    <small>Cora Dataset</small>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon blue">F</div>
-
-                <div>
-                    <span>Node Features</span>
-                    <strong>1,433</strong>
-                    <small>Bag-of-Words</small>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon green">C</div>
-
-                <div>
-                    <span>Classes</span>
-                    <strong>7</strong>
-                    <small>Research Topics</small>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon orange">E</div>
-
-                <div>
-                    <span>Graph Edges</span>
-                    <strong>5,429</strong>
-                    <small>Citation Links</small>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- TOPICS -->
-
-        <div class="content-card">
-
-            <div class="card-header">
-
-                <div>
-                    <h3>Cora Research Topics</h3>
-                    <p>Available prediction classes</p>
-                </div>
-
-                <span class="class-count">7 Classes</span>
-
-            </div>
-
-
-            <div class="topic-grid" id="topicGrid"></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- CORA PREDICTION -->
-    <!-- ================================================= -->
-
-    <section class="page-section" id="cora">
-
-        <div class="section-heading">
-
-            <div>
-                <div class="eyebrow">NODE CLASSIFICATION</div>
-
-                <h2>Cora Node Prediction</h2>
-
-                <p>
-                    Select one or more nodes from the Cora citation network
-                    and classify them using the trained GCN model.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="prediction-layout">
-
-            <!-- INPUT -->
-
-            <div class="content-card input-card">
-
-                <div class="card-header">
-
-                    <div>
-                        <h3>Node Selection</h3>
-                        <p>Enter Cora node indices</p>
+            <!-- HERO CARD -->
+            <div class="hero">
+                <div class="hero-glow"></div>
+                <div class="hero-content">
+                    <div class="eyebrow">
+                        <span class="eyebrow-badge">GRAPH DEEP LEARNING</span>
+                        <span>Cora Dataset Classifier</span>
                     </div>
 
-                    <span class="range-label">
-                        0 — 2707
-                    </span>
-
-                </div>
-
-
-                <label>Node IDs</label>
-
-                <input
-                    type="text"
-                    id="nodeInput"
-                    class="input"
-                    placeholder="Example: 0, 15, 42, 100"
-                >
-
-                <div class="input-help">
-                    <span>ⓘ</span>
-                    Separate multiple node IDs using commas.
-                </div>
-
-
-                <div class="quick-nodes">
-
-                    <span>Quick select:</span>
-
-                    <button onclick="setNodes('0')">0</button>
-                    <button onclick="setNodes('1')">1</button>
-                    <button onclick="setNodes('10')">10</button>
-                    <button onclick="setNodes('0, 1, 2, 3, 4')">
-                        0–4
-                    </button>
-
-                </div>
-
-
-                <button
-                    class="primary-btn full"
-                    id="predictCoraBtn"
-                    onclick="predictCora()"
-                >
-                    <span>Run GCN Prediction</span>
-                    <span>→</span>
-                </button>
-
-                <div class="error-message" id="coraError"></div>
-
-            </div>
-
-
-            <!-- RESULTS -->
-
-            <div class="content-card results-card">
-
-                <div class="card-header">
-
-                    <div>
-                        <h3>Prediction Results</h3>
-                        <p>Model classification output</p>
-                    </div>
-
-                    <span class="result-status" id="resultStatus">
-                        Waiting
-                    </span>
-
-                </div>
-
-
-                <div id="coraResults" class="empty-results">
-
-                    <div class="empty-icon">◎</div>
-
-                    <h3>No prediction yet</h3>
+                    <h2>
+                        Academic Citation Network
+                        <span class="gradient-text">Topic Classification</span>
+                    </h2>
 
                     <p>
-                        Enter one or more Cora node IDs
-                        to generate predictions.
+                        Analyze scientific publications as graph nodes and automatically classify
+                        them into 7 research disciplines using localized graph convolutional aggregation.
                     </p>
 
+                    <div class="hero-actions">
+                        <button class="primary-btn" onclick="showSection('cora')">
+                            <span>Predict Cora Nodes</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+
+                        <button class="secondary-btn" onclick="showSection('model')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <span>Model Architecture</span>
+                        </button>
+                    </div>
                 </div>
 
+                <div class="hero-visual">
+                    <div class="network-container">
+                        <svg class="graph-svg" viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Edge Lines -->
+                            <line x1="150" y1="120" x2="70" y2="60" stroke="rgba(124, 92, 255, 0.4)" stroke-width="1.5" stroke-dasharray="4 2"></line>
+                            <line x1="150" y1="120" x2="230" y2="60" stroke="rgba(124, 92, 255, 0.4)" stroke-width="1.5"></line>
+                            <line x1="150" y1="120" x2="60" y2="170" stroke="rgba(124, 92, 255, 0.4)" stroke-width="1.5"></line>
+                            <line x1="150" y1="120" x2="240" y2="170" stroke="rgba(124, 92, 255, 0.4)" stroke-width="1.5" stroke-dasharray="4 2"></line>
+                            <line x1="70" y1="60" x2="230" y2="60" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.2"></line>
+                            <line x1="60" y1="170" x2="240" y2="170" stroke="rgba(34, 197, 94, 0.3)" stroke-width="1.2"></line>
+                            <line x1="70" y1="60" x2="60" y2="170" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.2"></line>
+
+                            <!-- Nodes -->
+                            <g class="svg-node" transform="translate(150, 120)">
+                                <circle r="26" fill="url(#centerGlow)" filter="drop-shadow(0 0 12px rgba(124, 92, 255, 0.6))"></circle>
+                                <circle r="18" fill="#7c5cff"></circle>
+                                <text text-anchor="middle" dy="4" fill="#fff" font-size="10" font-weight="700">GCN</text>
+                            </g>
+                            <g class="svg-node" transform="translate(70, 60)">
+                                <circle r="12" fill="#3b82f6" filter="drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))"></circle>
+                                <text text-anchor="middle" dy="3.5" fill="#fff" font-size="9" font-weight="600">N1</text>
+                            </g>
+                            <g class="svg-node" transform="translate(230, 60)">
+                                <circle r="12" fill="#8b5cf6" filter="drop-shadow(0 0 8px rgba(139, 92, 246, 0.5))"></circle>
+                                <text text-anchor="middle" dy="3.5" fill="#fff" font-size="9" font-weight="600">N2</text>
+                            </g>
+                            <g class="svg-node" transform="translate(60, 170)">
+                                <circle r="12" fill="#10b981" filter="drop-shadow(0 0 8px rgba(16, 185, 129, 0.5))"></circle>
+                                <text text-anchor="middle" dy="3.5" fill="#fff" font-size="9" font-weight="600">N3</text>
+                            </g>
+                            <g class="svg-node" transform="translate(240, 170)">
+                                <circle r="12" fill="#f59e0b" filter="drop-shadow(0 0 8px rgba(245, 158, 11, 0.5))"></circle>
+                                <text text-anchor="middle" dy="3.5" fill="#fff" font-size="9" font-weight="600">N4</text>
+                            </g>
+
+                            <defs>
+                                <radialGradient id="centerGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) scale(26)">
+                                    <stop offset="0%" stop-color="#a855f7"></stop>
+                                    <stop offset="100%" stop-color="#6366f1"></stop>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
             </div>
 
-        </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- CUSTOM GRAPH -->
-    <!-- ================================================= -->
-
-    <section class="page-section" id="custom">
-
-        <div class="section-heading">
-
-            <div>
-
-                <div class="eyebrow">
-                    CUSTOM GRAPH INFERENCE
+            <!-- STATS GRID -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon purple">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        </div>
+                        <span class="stat-tag">Full Graph</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Total Graph Nodes</span>
+                        <strong class="stat-value">2,708</strong>
+                        <small class="stat-meta">Scientific publications</small>
+                    </div>
                 </div>
 
-                <h2>Custom Graph Prediction</h2>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        </div>
+                        <span class="stat-tag">Vector Space</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Node Features</span>
+                        <strong class="stat-value">1,433</strong>
+                        <small class="stat-meta">Binary Bag-of-Words</small>
+                    </div>
+                </div>
 
-                <p>
-                    Send your own graph structure and node feature matrix
-                    directly to the GCN inference API.
-                </p>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        </div>
+                        <span class="stat-tag">Target Labels</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Academic Classes</span>
+                        <strong class="stat-value">7</strong>
+                        <small class="stat-meta">Research categories</small>
+                    </div>
+                </div>
 
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon orange">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        </div>
+                        <span class="stat-tag">Citations</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Graph Edges</span>
+                        <strong class="stat-value">5,429</strong>
+                        <small class="stat-meta">Citation linkages</small>
+                    </div>
+                </div>
             </div>
 
-        </div>
-
-
-        <div class="custom-grid">
-
+            <!-- RESEARCH TOPICS GRID -->
             <div class="content-card">
-
                 <div class="card-header">
-
                     <div>
-                        <h3>Node Features</h3>
-                        <p>Each node requires 1,433 features</p>
+                        <h3>Cora Academic Categories</h3>
+                        <p>Seven output target classes predicted by the GCN model</p>
+                    </div>
+                    <span class="class-badge">7 Target Classes</span>
+                </div>
+
+                <div class="topic-grid" id="topicGrid"></div>
+            </div>
+
+        </section>
+
+        <!-- ================================================= -->
+        <!-- CORA PREDICTION -->
+        <!-- ================================================= -->
+        <section class="page-section" id="cora">
+
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">NODE CLASSIFICATION</div>
+                    <h2>Cora Node Predictor</h2>
+                    <p>Select target publication IDs from the Cora dataset to run real-time ONNX GCN inference.</p>
+                </div>
+            </div>
+
+            <div class="prediction-layout">
+                <!-- INPUT CARD -->
+                <div class="content-card input-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Node Selection</h3>
+                            <p>Enter node index IDs (0 to 2707)</p>
+                        </div>
+                        <span class="range-badge">Index: 0 – 2707</span>
                     </div>
 
+                    <div class="form-group">
+                        <label for="nodeInput">Node IDs</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input
+                                type="text"
+                                id="nodeInput"
+                                class="input"
+                                placeholder="e.g. 0, 15, 42, 100"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="input-help">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        <span>Separate multiple node IDs with commas.</span>
+                    </div>
+
+                    <div class="quick-nodes">
+                        <span class="quick-title">Presets:</span>
+                        <button class="chip-btn" onclick="setNodes('0'); predictCora();">Node 0</button>
+                        <button class="chip-btn" onclick="setNodes('15'); predictCora();">Node 15</button>
+                        <button class="chip-btn" onclick="setNodes('42'); predictCora();">Node 42</button>
+                        <button class="chip-btn" onclick="setNodes('0, 1, 2, 3, 4'); predictCora();">Nodes 0–4</button>
+                        <button class="chip-btn highlight" onclick="setRandomNodes()">Generate Random Nodes</button>
+                    </div>
+
+                    <button
+                        class="primary-btn full"
+                        id="predictCoraBtn"
+                        onclick="predictCora()"
+                    >
+                        <span>Run GCN Inference</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+
+                    <div class="error-message" id="coraError"></div>
                 </div>
 
+                <!-- RESULTS CARD -->
+                <div class="content-card results-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Prediction Output</h3>
+                            <p>Softmax probabilities across 7 classes</p>
+                        </div>
+                        <span class="result-status" id="resultStatus">Waiting for input</span>
+                    </div>
 
-                <label>JSON Feature Matrix</label>
+                    <div id="coraResults" class="empty-results">
+                        <div class="empty-illustration">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                            </svg>
+                        </div>
+                        <h3>No Prediction Executed</h3>
+                        <p>Enter one or more valid Cora node IDs on the left and click "Run GCN Inference".</p>
+                    </div>
+                </div>
+            </div>
 
+        </section>
+
+        <!-- ================================================= -->
+        <!-- CUSTOM GRAPH -->
+        <!-- ================================================= -->
+        <section class="page-section" id="custom">
+
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">CUSTOM GRAPH INFERENCE</div>
+                    <h2>Custom Graph Prediction</h2>
+                    <p>Supply custom node feature vectors [N × 1433] and edge index matrices [2 × E] for direct model evaluation.</p>
+                </div>
+            </div>
+
+            <!-- RANDOM GRAPH GENERATOR BAR -->
+            <div class="random-graph-control">
+                <div class="control-group">
+                    <span class="control-label">Random nodes</span>
+                    <div class="number-stepper">
+                        <input type="number" id="randomNodeCount" value="4" min="1" max="10">
+                        <div class="stepper-buttons">
+                            <button class="step-btn" onclick="stepNodeCount(-1)">-</button>
+                            <button class="step-btn" onclick="stepNodeCount(1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-btn-amber" onclick="generateRandomGraph()">
+                    <span>Generate random graph</span>
+                </button>
+            </div>
+
+            <!-- CODE EDITORS -->
+            <div class="form-group custom-field">
+                <label for="featureInput">Node features (JSON array of arrays)</label>
                 <textarea
                     id="featureInput"
                     class="code-input"
-                    placeholder='[[0,1,0,...], [1,0,0,...]]'
+                    placeholder="[[0, 0, ..., 1, ...], [1, 0, ..., 0, ...]]"
                 ></textarea>
-
-                <div class="input-help">
-                    <span>ⓘ</span>
-                    Format: [number_of_nodes × 1433]
-                </div>
-
             </div>
 
-
-            <div class="content-card">
-
-                <div class="card-header">
-
-                    <div>
-                        <h3>Edge Index</h3>
-                        <p>Optional graph connections</p>
-                    </div>
-
-                </div>
-
-
-                <label>JSON Edge Matrix</label>
-
+            <div class="form-group custom-field">
+                <label for="edgeInput">Edge indices — optional, shape [2, num_edges]</label>
                 <textarea
                     id="edgeInput"
                     class="code-input small"
-                    placeholder='[[0,1,2], [1,2,0]]'
+                    placeholder="[[0, 1, 1, 2], [1, 0, 2, 1]]"
                 ></textarea>
-
-                <div class="input-help">
-                    <span>ⓘ</span>
-                    Format: [2 × number_of_edges]
-                </div>
-
             </div>
 
-        </div>
-
-
-        <button
-            class="primary-btn custom-predict"
-            onclick="predictCustom()"
-        >
-            Run Custom Graph
-            <span>→</span>
-        </button>
-
-
-        <div class="content-card custom-output">
-
-            <div class="card-header">
-
-                <div>
-                    <h3>Inference Output</h3>
-                    <p>Custom graph prediction response</p>
-                </div>
-
+            <div class="input-note">
+                <span>ⓘ</span> If edges are omitted, the API self-loops every node — no message passing between nodes.
             </div>
 
-            <pre id="customResult">No inference executed.</pre>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- MODEL DETAILS -->
-    <!-- ================================================= -->
-
-    <section class="page-section" id="model">
-
-        <div class="section-heading">
-
-            <div>
-
-                <div class="eyebrow">MODEL INFORMATION</div>
-
-                <h2>Simple GCN Architecture</h2>
-
-                <p>
-                    Technical information about the deployed ONNX model
-                    and its inference configuration.
-                </p>
-
+            <div class="custom-actions">
+                <button
+                    class="action-btn-amber classify-btn"
+                    onclick="predictCustom()"
+                >
+                    <span>Classify custom graph</span>
+                </button>
             </div>
 
-        </div>
-
-
-        <div class="model-grid">
-
-            <div class="content-card model-overview">
-
-                <div class="model-logo">GCN</div>
-
-                <h2>Simple Graph Convolutional Network</h2>
-
-                <p>
-                    A graph neural network designed to perform node
-                    classification on the Cora citation network.
-                </p>
-
-
-                <div class="architecture">
-
-                    <div class="architecture-step">
-                        <span>01</span>
-                        <strong>Node Features</strong>
-                        <small>1433 dimensions</small>
-                    </div>
-
-                    <div class="architecture-line"></div>
-
-                    <div class="architecture-step">
-                        <span>02</span>
-                        <strong>Graph Convolution</strong>
-                        <small>Neighborhood aggregation</small>
-                    </div>
-
-                    <div class="architecture-line"></div>
-
-                    <div class="architecture-step">
-                        <span>03</span>
-                        <strong>Classification</strong>
-                        <small>7 output classes</small>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="content-card">
-
+            <div class="content-card custom-output">
                 <div class="card-header">
-
                     <div>
-                        <h3>Runtime Configuration</h3>
-                        <p>ONNX Runtime environment</p>
+                        <h3>Inference Response JSON</h3>
+                        <p>Raw response output from ONNX runtime</p>
                     </div>
-
                 </div>
 
-                <div class="info-list">
-
-                    <div>
-                        <span>Model Format</span>
-                        <strong>ONNX</strong>
-                    </div>
-
-                    <div>
-                        <span>Runtime</span>
-                        <strong>ONNX Runtime</strong>
-                    </div>
-
-                    <div>
-                        <span>Execution Provider</span>
-                        <strong>CPU</strong>
-                    </div>
-
-                    <div>
-                        <span>Input Features</span>
-                        <strong>1,433</strong>
-                    </div>
-
-                    <div>
-                        <span>Output Classes</span>
-                        <strong>7</strong>
-                    </div>
-
-                    <div>
-                        <span>Dataset</span>
-                        <strong>Planetoid / Cora</strong>
-                    </div>
-
-                </div>
-
+                <pre id="customResult" class="json-viewer">No inference executed yet.</pre>
             </div>
 
-        </div>
+        </section>
 
+        <!-- ================================================= -->
+        <!-- MODEL DETAILS -->
+        <!-- ================================================= -->
+        <section class="page-section" id="model">
 
-        <div class="content-card">
-
-            <div class="card-header">
-
+            <div class="section-heading">
                 <div>
-                    <h3>API Status</h3>
-                    <p>FastAPI backend connectivity</p>
+                    <div class="eyebrow">SYSTEM ARCHITECTURE</div>
+                    <h2>Model & System Telemetry</h2>
+                    <p>Details regarding the Graph Convolutional Network architecture and ONNX execution environment.</p>
+                </div>
+            </div>
+
+            <div class="model-grid">
+                <!-- ARCHITECTURE CARD -->
+                <div class="content-card model-overview">
+                    <div class="model-badge-row">
+                        <div class="model-logo">GCN</div>
+                        <span class="badge-tag">ONNX Runtime Engine</span>
+                    </div>
+
+                    <h2>Simple Graph Convolutional Network</h2>
+                    <p>A 2-layer Graph Convolutional Network (GCN) designed for localized message passing and node classification on citation datasets.</p>
+
+                    <div class="architecture-flow">
+                        <div class="arch-card">
+                            <div class="arch-step">01</div>
+                            <div class="arch-info">
+                                <strong>Input Node Features</strong>
+                                <span>Matrix shape: [N, 1433]</span>
+                            </div>
+                        </div>
+
+                        <div class="arch-connector">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                        </div>
+
+                        <div class="arch-card highlight">
+                            <div class="arch-step">02</div>
+                            <div class="arch-info">
+                                <strong>GCN Layer 1 + ReLU</strong>
+                                <span>Neighborhood aggregation (1433 → 16)</span>
+                            </div>
+                        </div>
+
+                        <div class="arch-connector">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                        </div>
+
+                        <div class="arch-card">
+                            <div class="arch-step">03</div>
+                            <div class="arch-info">
+                                <strong>GCN Layer 2 + LogSoftmax</strong>
+                                <span>Classification logits (16 → 7 classes)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- SPECIFICATIONS CARD -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Runtime Specifications</h3>
+                            <p>Deployed ONNX configuration parameters</p>
+                        </div>
+                    </div>
+
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="info-key">Model Format</span>
+                            <strong class="info-val">ONNX (.onnx)</strong>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">Inference Session</span>
+                            <strong class="info-val">ONNXRuntime CPU</strong>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">Execution Provider</span>
+                            <strong class="info-val">CPUExecutionProvider</strong>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">Input Tensor Name</span>
+                            <strong class="info-val">node_features</strong>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">Edge Tensor Name</span>
+                            <strong class="info-val">edge_indices</strong>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">Dataset Origin</span>
+                            <strong class="info-val">PyTorch Geometric / Cora</strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="api-detail" id="apiDetails">
-                Checking API...
+            <!-- API TELEMETRY CARD -->
+            <div class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h3>FastAPI Health & Providers Telemetry</h3>
+                        <p>Live status payload from `/healthcheck` endpoint</p>
+                    </div>
+                </div>
+
+                <pre class="api-detail json-viewer" id="apiDetails">Checking API backend status...</pre>
             </div>
 
-        </div>
+        </section>
 
-    </section>
-
-</main>
-
-
-</div>
-
-<!-- ================================================= -->
-
-<!-- MODAL -->
-
-<!-- ================================================= -->
-
-<div class="modal-overlay" id="predictionModal">
-
-
-<div class="modal">
-
-    <button
-        class="modal-close"
-        onclick="closeModal()"
-    >
-        ×
-    </button>
-
-    <div id="modalContent"></div>
-
-</div>
-
+    </main>
 
 </div>
 
 <script src="/static/script.js"></script>
-
 </body>
 </html>
